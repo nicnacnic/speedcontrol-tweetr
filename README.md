@@ -30,6 +30,8 @@ To install, navigate to your root NodeCG directory and run the following command
 
 After the installation completes, create a config file by running `nodecg defaultconfig speedcontrol-tweetr`.
 
+You will need to create a Twitter Developer account and get an API key/secret and an access token/secret to connect to Twitter.
+
 ## Usage
 Once the bundle is configured properly, usage is pretty simple. On first load, the bundle should automatically retrieve all runs and load them into the bundle. To edit tweets, simply select your game in the dropdown and press `Edit`. There is a 280 character limit. Make sure to save, then press anywhere outside of the dialog to exit.
 
