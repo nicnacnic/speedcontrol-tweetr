@@ -1,0 +1,42 @@
+{
+  "name": "tweetr",
+  "version": "1.0.0",
+  "description": "Control Twitter right from your NodeCG dashboard!",
+  "homepage": "https://github.com/nicnacnic/speedcontrol-tweetr",
+  "author": "nicnacnic",
+  "url": "https://nicnacnic.com",
+  "license": "MIT",
+  "nodecg": {
+    "dependencies": [
+      "speedcontrol/nodecg-speedcontrol:>=2.0"
+    ],
+    "compatibleRange": "^1.6.0",
+    "dashboardPanels": [
+      {
+        "name": "tweetr",
+        "title": "Tweetr",
+        "file": "tweetr.html",
+        "width": 3
+      },
+      {
+        "name": "edit-tweet",
+        "title": "Edit Tweet",
+        "width": 3,
+        "file": "edit-tweet.html",
+        "dialog": true
+      }
+    ]
+  },
+  "dependencies": {
+    "@polymer/paper-button": "^3.0.1",
+    "@polymer/paper-dropdown-menu": "^3.2.0",
+    "@polymer/paper-input": "^3.2.1",
+    "@polymer/paper-item": "^3.0.1",
+    "@polymer/paper-listbox": "^3.0.1",
+    "@polymer/paper-slider": "^3.0.1",
+    "@polymer/paper-styles": "^3.0.1",
+    "@polymer/polymer": "^3.4.1",
+    "twitter-api-client": "^1.3.7",
+    "twitter-media": "^0.2.0"
+  }
+}
