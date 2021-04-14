@@ -4,7 +4,7 @@ const TwitterClient = require('twitter-api-client').TwitterClient;
 const TwitterMedia = require('twitter-media');
 const path = require('path');
 const fs = require('fs');
-const tweetContentFile = "./bundles/tweetr/extension/data/tweetContent.json";
+const tweetContentFile = "./bundles/speedcontrol-tweetr/extension/data/tweetContent.json";
 const speedcontrolBundle = 'nodecg-speedcontrol';
 
 module.exports = function(nodecg) {
@@ -30,7 +30,7 @@ module.exports = function(nodecg) {
 
 	nodecg.listenFor('mediaUpload', (value, ack) => {
 		try {
-			const promise = fs.promises.readFile(path.join('./bundles/tweetr/media/' + value));
+			const promise = fs.promises.readFile(path.join('./bundles/speedcontrol-tweetr/media/' + value));
 			Promise.resolve(promise).then(function(buffer) {
 				let callback;
 				if (value.includes('png') || value.includes('jpg') || value.includes('gif')) {
