@@ -41,6 +41,8 @@ To enable Auto Tweet, set `autoTweet` to true in the config. `tweetDelay` specif
 
 The text box at the bottom is for when you want to quickly compose and post a tweet without attaching it to a run. The limits to character count and media size still apply here as well.
 
+If you would like your social media team to use Tweetr, but don't want to give them the link to the dashboard, you can always pop out Tweetr to a standalone window. To do this, press the new window button in Tweetr's panel, this should pop out the window into a new tab. Alternativly, you can also use this link: `http://<your_ip>:9090/bundles/speedcontrol-tweetr/dashboard/tweetr.html?standalone=true`. Everything but the edit dialog works (this is a limitation with NodeCG).
+
 ## Commission Work
 Commission work is available! If you don't have any coding experience, or simply don't have time to develop, I can help bring your project or event to life. More information can be found by visiting my website at [https://www.nicnacnic.com/commission-work](https://www.nicnacnic.com/commission-work) or contacting me through Discord.
 
