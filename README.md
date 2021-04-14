@@ -31,7 +31,7 @@ To install, navigate to your root NodeCG directory and run the following command
 After the installation completes, create a config file by running `nodecg defaultconfig speedcontrol-tweetr`.
 
 ## Usage
-Once the bundle is configured properly, usage is pretty simple. On first load, the bundle should automaticlly retrieve all runs and load them into the bundle. To edit tweets, simply select your game in the dropdown and press `Edit`. There is a 280 character limit. Make sure to save, then press anywhere outside of the dialog to exit.
+Once the bundle is configured properly, usage is pretty simple. On first load, the bundle should automatically retrieve all runs and load them into the bundle. To edit tweets, simply select your game in the dropdown and press `Edit`. There is a 280 character limit. Make sure to save, then press anywhere outside of the dialog to exit.
 
 For media, place your file in `<path_to_nodecg>/bundles/tweetr/media`. In the `Attachment Filename` field, enter the full filename (including the file extension!). Supported formats are png, jpg, gif and mp4. Images can not be larger than 5 MB, GIF's 15 MB, and videos 512 MB. Exceeding these size limits could cause NodeCG to crash.
 
