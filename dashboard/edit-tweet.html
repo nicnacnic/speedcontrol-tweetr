@@ -51,6 +51,9 @@
 			import '@polymer/paper-button/paper-button.js';
 			import '@polymer/paper-input/paper-input.js';
 			import '@polymer/paper-input/paper-textarea.js';
+			import '@polymer/paper-item/paper-item.js';
+			import '@polymer/paper-listbox/paper-listbox.js';
+			import '@polymer/paper-dropdown-menu/paper-dropdown-menu.js';
 			import '@polymer/paper-styles/paper-styles.js';
 		</script>
 		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -61,7 +64,12 @@
 	<body>
 		<div id="main">
 			<paper-textarea class="textarea" rows="6" maxlength="280" char-counter id="editComposeTweet" label="Compose Tweet"></paper-textarea>
-			<paper-input class="input" id="editAttachmentURL" label="Attachment Filename"></paper-input>
+			<div class="mediaDiv">
+			<paper-dropdown-menu class="dropdown" label="Media" vertical-offset="-150" style="margin-top:-10px;">
+				<paper-listbox slot="dropdown-content" class="dropdown-content" id="mediaList" selected="0">
+				</paper-listbox>
+			</paper-dropdown-menu>
+			<paper-button raised class="button" id="clearMedia" onclick="clearMedia();">Clear</paper-button>
 			<div class="buttonDiv">
 			<paper-button raised class="button" id="saveTweet" onclick="saveTweet();">Save</paper-button>
 			</div>
@@ -99,6 +107,18 @@
 					paper-button.button[disabled] {
 					background-color: #485264;
 					};
+					paper-dropdown-menu.dropdown {
+					width: 278px;
+					margin-top: -500px;
+					--paper-input-container-color: #FFFFFFB3;
+					--paper-input-container-focus-color: #2196F3;
+					--paper-input-container-input-color: #FFFFFF;
+					--paper-input-container-underline-focus-border-color: #2196F3;
+					};
+					paper-listbox.dropdown-content {
+					width: 300px;
+					height: 280px;
+					}
 				</style>
 			</custom-style>
 		</div>

@@ -1,32 +1,49 @@
 let selectedRunId;
 
-nodecg.listenFor('sendEditRunId', (value, ack) => {
+let tweetData = nodecg.Replicant('tweetData');
+let mediaData = nodecg.Replicant('assets:media')
+NodeCG.waitForReplicants(tweetData);
+
+nodecg.listenFor('sendEditRunId', (value) => {
 	selectedRunId = value;
 	document.getElementById("saveTweet").removeAttribute('disabled');
 	document.getElementById("saveTweet").innerHTML = 'Save';
 
-	nodecg.sendMessage('getTweetContent', '', (error, result) => {
-		for (let i = 0; i < result.length; i++) {
-			if (selectedRunId === result[i].id) {
-				document.getElementById("editComposeTweet").value = result[i].tweetContent;
-				document.getElementById("editAttachmentURL").value = result[i].tweetAttachment;
-				break;
+	document.getElementById("editComposeTweet").value = '';
+	document.getElementById("mediaList").innerHTML = '';
+
+	for (let i = 0; i < tweetData.value.length; i++) {
+		if (tweetData.value[i].id === selectedRunId) {
+			document.getElementById("editComposeTweet").value = tweetData.value[i].content;
+			for (let j = 0; j < mediaData.value.length; j++) {
+				let paperItem = document.createElement("paper-item");
+				paperItem.innerHTML = mediaData.value[j].base;
+				document.getElementById("mediaList").appendChild(paperItem)
+
+				if (tweetData.value[i].media === '')
+					document.getElementById("mediaList").selected = null;
+				else if (mediaData.value[j].base === tweetData.value[i].media)
+					document.getElementById("mediaList").selectIndex(j);
 			}
+			break;
 		}
-	})
+		else if (i === tweetData.value.length - 1)
+			document.getElementById("mediaList").selected = null;
+	}
 });
 
+function clearMedia() {
+	document.getElementById("mediaList").selected = null;
+}
+
 function saveTweet() {
-	nodecg.sendMessage('getTweetContent', '', (error, result) => {
-		for (let i = 0; i < result.length; i++) {
-			if (selectedRunId === result[i].id) {
-				result[i].tweetContent = document.getElementById("editComposeTweet").value;
-				result[i].tweetAttachment = document.getElementById("editAttachmentURL").value;
-				break;
-			}
+	for (let i = 0; i < tweetData.value.length; i++) {
+		if (tweetData.value[i].id === selectedRunId) {
+			tweetData.value[i].content = document.getElementById("editComposeTweet").value;
+			try { tweetData.value[i].media = document.getElementById("mediaList").selectedItem.innerHTML } catch { tweetData.value[i].media = '' }
+			break;
 		}
-		nodecg.sendMessage('setTweetContent', result);
-		document.getElementById("saveTweet").setAttribute('disabled', 'true')
-		document.getElementById("saveTweet").innerHTML = 'Saved!';
-	})
+	}
+	document.getElementById("saveTweet").setAttribute('disabled', 'true')
+	document.getElementById("saveTweet").innerHTML = 'Saved!';
 }

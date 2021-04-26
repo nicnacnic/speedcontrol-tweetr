@@ -8,3 +8,10 @@
 	display: inline-block;
 	text-align: center;
 }
+.mediaDiv {
+	width: 100%;
+	display: inline-block;
+}
+#clearMedia {
+	margin-left: 10px;
+}

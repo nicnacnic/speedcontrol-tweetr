@@ -73,7 +73,10 @@
 			<paper-button raised class="nodecg-configure" nodecg-dialog="edit-tweet" id="editTweet" onClick="sendRunIndex()">Edit</paper-button>
 			</div>
 			<paper-textarea class="textarea" id="composeTweet" rows="6" maxlength="280" char-counter label="Compose Tweet"></paper-textarea>
-			<paper-input class="input" id="composeAttachment"label="Attachment Filename"></paper-input>
+			<paper-dropdown-menu class="dropdown" label="Media" vertical-offset="-150" style="margin-top:-10px;">
+				<paper-listbox slot="dropdown-content" class="dropdown-content" id="mediaList" selected="0">
+				</paper-listbox>
+			</paper-dropdown-menu>
 			<div class="buttonDiv">
 			<paper-button raised class="button" id="tweet" onclick="tweetTextarea();">Tweet</paper-button>
 			</div>
@@ -141,7 +144,7 @@
 					--paper-input-container-underline-focus-border-color: #2196F3;
 					};
 					paper-listbox.dropdown-content {
-					width: 350px;
+					width: 300px;
 					height: 280px;
 					}
 				</style>
