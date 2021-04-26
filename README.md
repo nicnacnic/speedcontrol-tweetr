@@ -35,7 +35,7 @@ You will need to create a Twitter Developer account and get an API key/secret an
 ## Usage
 Once the bundle is configured properly, usage is pretty simple. On first load, the bundle should automatically retrieve all runs and load them into the bundle. To edit tweets, simply select your game in the dropdown and press `Edit`. There is a 280 character limit. Make sure to save, then press anywhere outside of the dialog to exit.
 
-For media, place your file in `<path_to_nodecg>/bundles/tweetr/media`. In the `Attachment Filename` field, enter the full filename (including the file extension!). Supported formats are png, jpg, gif and mp4. Images can not be larger than 5 MB, GIF's 15 MB, and videos 512 MB. Exceeding these size limits could cause NodeCG to crash.
+For media, upload images and videos through NodeCG's asset tab, located in the top-right. To select the media you want to use for your tweet, open the dropdown and select your file. Supported formats are png, jpg, gif and mp4. Images can not be larger than 5 MB, GIF's 15 MB, and videos 512 MB. Make sure your filename does **not** have spaces or invalid characters, and your media is within the size limit, or it will cause your NodeCG instance to crash.
 
 To enable Auto Tweet, set `autoTweet` to true in the config. `tweetDelay` specifies how long you have to cancel the tweet, 30 seconds is recommended. Once you switch runs, the button will show a countdown, you can either cancel the tweet (you can always tweet it later!), or wait for the countdown to finish, then the tweet will be sent.
 
