@@ -24,7 +24,7 @@ module.exports = function(nodecg) {
 
 	nodecg.listenFor('statusesUpdate', (value, ack) => {
 		twitterClient.tweets.statusesUpdate(value).catch((error) => {
-			nodecg.log.warn('Error posting tweet. Your tweet is probably a duplicate.')
+			nodecg.log.warn('Error posting tweet. Your tweet is either blank, invalid, or a duplicate.')
 		});
 	});
 
@@ -44,4 +44,8 @@ module.exports = function(nodecg) {
 			});
 		} catch { nodecg.log.warn('Media upload failed! Your file is too big, or there is an invalid filename. (Hint: Make sure to remove spaces in your filename!)') }
 	});
+	
+	nodecg.listenFor('consoleLog', (value) => {
+		nodecg.log.warn(value);
+	})
 }

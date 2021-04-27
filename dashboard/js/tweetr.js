@@ -9,16 +9,38 @@ let buttonTimer;
 let firstLoad = true;
 
 NodeCG.waitForReplicants(runDataActiveRun, runDataArray, tweetData).then(function() {
-	syncArrays(tweetData.value, runDataArray.value);
+	if (runDataArray.value.length === 0) {
+		console.warn('[speedcontrol-tweetr] No runs have been detected, please create/import runs then refresh the dashboard to populate the dropdown.')
+		nodecg.sendMessage('consoleLog', 'No runs have been detected, please create/import runs then refresh the dashboard to populate the dropdown.');
+		exit()
+	}
+	else if (tweetData.value === '') {
+		tweetData.value = '';
+		let array = [];
+		for (let i = 0; i < runDataArray.value; i++) {
+			array.push({
+				id: runDataArray.value[i].id,
+				game: runDataArray.value[i].game,
+				content: '',
+				media: ''
+			});
+		}
+		tweetData.value = array;
+	}
+	else {
+		syncArrays(tweetData.value, runDataArray.value);
+	}
 	for (let i = 0; i < tweetData.value.length; i++) {
 		let paperItem = document.createElement("paper-item");
 		paperItem.setAttribute("runId", tweetData.value[i].id);
 		paperItem.innerHTML = tweetData.value[i].game;
 		document.getElementById("runList").appendChild(paperItem)
 
-		if (runDataActiveRun.value.id === tweetData.value[i].id) {
-			document.getElementById("runList").setAttribute('selected', i);
-		}
+		try {
+			if (runDataActiveRun.value.id === tweetData.value[i].id) {
+				document.getElementById("runList").setAttribute('selected', i);
+			}
+		} catch { }
 	}
 })
 
@@ -26,10 +48,12 @@ window.addEventListener('load', function() {
 	runDataActiveRun.on('change', (newVal, oldVal) => {
 		let dropdownContent = document.getElementById("runList").items;
 		for (let i = 0; i < dropdownContent.length; i++) {
-			if (dropdownContent[i].getAttribute('runId') === newVal.id) {
-				document.getElementById("runList").setAttribute('selected', i);
-				break;
-			}
+			try {
+				if (dropdownContent[i].getAttribute('runId') === newVal.id) {
+					document.getElementById("runList").setAttribute('selected', i);
+					break;
+				}
+			} catch { }
 		}
 		if (nodecg.bundleConfig.autoTweet && !firstLoad)
 			startCountdown();
@@ -49,7 +73,7 @@ window.addEventListener('load', function() {
 			document.getElementById("runList").appendChild(paperItem)
 		}
 	})
-	
+
 	mediaData.on('change', (newVal, oldVal) => {
 		document.getElementById("mediaList").innerHTML = "";
 		for (let i = 0; i < mediaData.value.length; i++) {
@@ -62,17 +86,16 @@ window.addEventListener('load', function() {
 });
 
 function syncArrays(oldVal, newVal) {
-	let result = tweetData;
 	if (oldVal.length > newVal.length) {
 		let duplicateItems = oldVal.filter(obj => newVal.every(s => s.id !== obj.id));
 		for (let i = 0; i < duplicateItems.length; i++) {
-			result.value.splice(result.value.findIndex(obj => obj.id === duplicateItems[i].id), 1);
+			tweetData.value.splice(tweetData.value.findIndex(obj => obj.id === duplicateItems[i].id), 1);
 		}
 	}
 	else if (oldVal.length < newVal.length) {
 		let missingItems = newVal.filter(obj => oldVal.every(s => s.id !== obj.id));
 		for (let i = 0; i < missingItems.length; i++) {
-			result.value.push({ id: missingItems[i].id, game: missingItems[i].game, content: '', media: '' })
+			tweetData.value.push({ id: missingItems[i].id, game: missingItems[i].game, content: '', media: '' })
 		}
 	}
 }
@@ -162,4 +185,8 @@ function sendRunIndex() {
 	document.getElementById("tweetNow").innerHTML = "Tweet";
 	document.getElementById("cancelTweet").setAttribute('disabled', 'true');
 	nodecg.sendMessage('sendEditRunId', document.getElementById("runList").selectedItem.getAttribute('runId'));
+}
+
+function clearMedia() {
+	document.getElementById("mediaList").selected = null;
 }

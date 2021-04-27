@@ -73,10 +73,12 @@
 			<paper-button raised class="nodecg-configure" nodecg-dialog="edit-tweet" id="editTweet" onClick="sendRunIndex()">Edit</paper-button>
 			</div>
 			<paper-textarea class="textarea" id="composeTweet" rows="6" maxlength="280" char-counter label="Compose Tweet"></paper-textarea>
-			<paper-dropdown-menu class="dropdown" label="Media" vertical-offset="-150" style="margin-top:-10px;">
+			<div class="mediaDiv">
+			<paper-dropdown-menu class="dropdown" label="Media" vertical-offset="-150" style="width: 304px;">
 				<paper-listbox slot="dropdown-content" class="dropdown-content" id="mediaList" selected="0">
 				</paper-listbox>
 			</paper-dropdown-menu>
+			<paper-button raised class="button" id="clearMedia" onclick="clearMedia();">Clear</paper-button>
 			<div class="buttonDiv">
 			<paper-button raised class="button" id="tweet" onclick="tweetTextarea();">Tweet</paper-button>
 			</div>
