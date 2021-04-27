@@ -160,9 +160,11 @@ function sendTweet(data) {
 }
 
 function tweetTextarea() {
+	let media;
 	const tweetText = document.getElementById("composeTweet").value;
-	if (document.getElementById("composeTweet").value !== undefined && document.getElementById("mediaList").selectedItem.innerHTML !== '') {
-		let currentTweetData = { content: tweetText, media: document.getElementById("mediaList").selectedItem.innerHTML }
+	if (document.getElementById("composeTweet").value !== undefined) {
+		try { media = document.getElementById("mediaList").selectedItem.innerHTML } catch { media = undefined }
+		let currentTweetData = { content: tweetText, media: media };
 		sendTweet(currentTweetData);
 		document.getElementById("composeTweet").value = '';
 		document.getElementById("mediaList").selected = null;

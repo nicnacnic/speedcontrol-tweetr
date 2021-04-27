@@ -7,16 +7,22 @@
   "url": "https://nicnacnic.com",
   "license": "MIT",
   "nodecg": {
-     "bundleDependencies": {
+    "bundleDependencies": {
       "nodecg-speedcontrol": "^2.2.0"
     },
     "compatibleRange": "^1.6.0",
-	"assetCategories": [
+    "assetCategories": [
       {
         "name": "media",
         "title": "Tweet Media",
-        "allowedTypes": ["png", "jpg", "gif", "mp4"]
-      }],
+        "allowedTypes": [
+          "png",
+          "jpg",
+          "gif",
+          "mp4"
+        ]
+      }
+    ],
     "dashboardPanels": [
       {
         "name": "tweetr",
@@ -33,7 +39,7 @@
       }
     ]
   },
-"dependencies": {
+  "dependencies": {
     "@polymer/paper-button": "^3.0.1",
     "@polymer/paper-dropdown-menu": "^3.2.0",
     "@polymer/paper-input": "^3.2.1",
@@ -44,5 +50,9 @@
     "@polymer/polymer": "^3.4.1",
     "twitter-api-client": "^1.3.7",
     "twitter-media": "^0.2.0"
-   }
+  },
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^11.2.1",
+    "rollup": "^2.45.2"
+  }
 }
