@@ -1,4 +1,4 @@
-![image](https://user-images.githubusercontent.com/39160563/114646004-736e9d80-9ca8-11eb-8c80-39f60b6cfaee.png)
+![image](https://user-images.githubusercontent.com/39160563/116319341-5b0c8180-a784-11eb-8310-82c17b0f3e63.png)
 
 # speedcontrol-tweetr
 Control Twitter right from your NodeCG dashboard!
