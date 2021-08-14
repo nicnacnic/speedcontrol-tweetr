@@ -8,9 +8,9 @@
   "license": "MIT",
   "nodecg": {
     "bundleDependencies": {
-      "nodecg-speedcontrol": "^2.2.0"
+      "nodecg-speedcontrol": "^2.4.0"
     },
-    "compatibleRange": "^1.6.0",
+    "compatibleRange": "^1.8.1",
     "assetCategories": [
       {
         "name": "media",
