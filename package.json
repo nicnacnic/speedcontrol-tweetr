@@ -1,6 +1,6 @@
 {
   "name": "speedcontrol-tweetr",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "description": "Control Twitter right from your NodeCG dashboard!",
   "homepage": "https://github.com/nicnacnic/speedcontrol-tweetr",
   "author": "nicnacnic",
@@ -32,8 +32,8 @@
       },
       {
         "name": "edit-tweet",
-        "title": "Edit Tweet",
-        "width": 3,
+        "title": "",
+        "width": 4,
         "file": "edit-tweet.html",
         "dialog": true
       }

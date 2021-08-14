@@ -1,19 +1,17 @@
 #main {
-	width: 416px;
+	width: 384px;
 	height: 100%;
 	margin-top: 10px;
 	display: inline-block;
 }
 .buttonDiv {
-	width: 386px;
+	width: 384px;
 	display: inline-block;
 	text-align: center;
+	margin: 10px 0;
 }
 .mediaDiv {
 	margin-top: 4px;
 	width: 100%;
 	display: inline-block;
-}
-#clearMedia {
-	margin-left: 10px;
 }

@@ -1,194 +1,97 @@
-'use strict';
-
 const speedcontrolBundle = 'nodecg-speedcontrol';
-let runDataActiveRun = nodecg.Replicant('runDataActiveRun', speedcontrolBundle);
-let runDataArray = nodecg.Replicant('runDataArray', speedcontrolBundle);
-let tweetData = nodecg.Replicant('tweetData');
-let mediaData = nodecg.Replicant('assets:media')
+const runDataActiveRun = nodecg.Replicant('runDataActiveRun', speedcontrolBundle);
+const runDataArray = nodecg.Replicant('runDataArray', speedcontrolBundle);
+const tweetData = nodecg.Replicant('tweetData');
+const mediaData = nodecg.Replicant('assets:media')
+const selectedRunId = nodecg.Replicant('selectedRunId');
+const countdownTimer = nodecg.Replicant('countdownTimer')
 let buttonTimer;
 let firstLoad = true;
 
-NodeCG.waitForReplicants(runDataActiveRun, runDataArray, tweetData).then(function() {
-	if (runDataArray.value.length === 0) {
-		console.warn('[speedcontrol-tweetr] No runs have been detected, please create/import runs then refresh the dashboard to populate the dropdown.')
-		nodecg.sendMessage('consoleLog', 'No runs have been detected, please create/import runs then refresh the dashboard to populate the dropdown.');
-		exit()
-	}
-	else if (tweetData.value === '') {
-		tweetData.value = '';
-		let array = [];
-		for (let i = 0; i < runDataArray.value; i++) {
-			array.push({
-				id: runDataArray.value[i].id,
-				game: runDataArray.value[i].game,
-				content: '',
-				media: ''
-			});
-		}
-		tweetData.value = array;
-	}
-	else {
-		syncArrays(tweetData.value, runDataArray.value);
-	}
-	for (let i = 0; i < tweetData.value.length; i++) {
-		let paperItem = document.createElement("paper-item");
-		paperItem.setAttribute("runId", tweetData.value[i].id);
-		paperItem.innerHTML = tweetData.value[i].game;
-		document.getElementById("runList").appendChild(paperItem)
+NodeCG.waitForReplicants(runDataActiveRun, runDataArray, tweetData, selectedRunId).then(() => {
+	runDataArray.on('change', (newVal) => populateDropdown(newVal));
+	//runDataActiveRun.on('change', (newVal) => startCountdown(newVal));
+	selectedRunId.on('change', (newVal) => updateDropdown(newVal));
+	tweetData.on('change', () => updatePreview());
 
-		try {
-			if (runDataActiveRun.value.id === tweetData.value[i].id) {
-				document.getElementById("runList").setAttribute('selected', i);
-			}
-		} catch { }
-	}
+	countdownTimer.on('change', (newVal) => {
+		if (newVal.countdownActive)
+			updateCountdown(newVal);
+		else if (newVal.sendTweet)
+			sendTweet();
+		else if (newVal.cancelTweet)
+			cancelTweet();
+	})
 })
 
-window.addEventListener('load', function() {
-	runDataActiveRun.on('change', (newVal, oldVal) => {
-		let dropdownContent = document.getElementById("runList").items;
-		for (let i = 0; i < dropdownContent.length; i++) {
-			try {
-				if (dropdownContent[i].getAttribute('runId') === newVal.id) {
-					document.getElementById("runList").setAttribute('selected', i);
-					break;
-				}
-			} catch { }
-		}
-		if (nodecg.bundleConfig.autoTweet && !firstLoad)
-			startCountdown();
-		else
-			showButtons();
-		firstLoad = false;
-	});
+window.addEventListener('load', () => { 
+	updateDropdown(selectedRunId.value) 
+	if (countdownTimer.value.sendTweet)
+		sendTweet();
+	else if (countdownTimer.value.cancelTweet)
+		cancelTweet();
+})
 
-	runDataArray.on('change', (newVal, oldVal) => {
-		if (oldVal !== undefined)
-			syncArrays(oldVal, newVal);
-		document.getElementById("runList").innerHTML = "";
-		for (let i = 0; i < tweetData.value.length; i++) {
-			let paperItem = document.createElement("paper-item");
-			paperItem.setAttribute("runId", tweetData.value[i].id);
-			paperItem.innerHTML = tweetData.value[i].game;
-			document.getElementById("runList").appendChild(paperItem)
-		}
+function populateDropdown(data) {
+	let dropdownContent = document.getElementById("runList");
+	dropdownContent.innerHTML = '';
+	data.forEach(run => {
+		let paperItem = document.createElement("paper-item");
+		paperItem.innerHTML = run.game;
+		paperItem.setAttribute("id", run.id);
+		dropdownContent.appendChild(paperItem)
 	})
-
-	mediaData.on('change', (newVal, oldVal) => {
-		document.getElementById("mediaList").innerHTML = "";
-		for (let i = 0; i < mediaData.value.length; i++) {
-			let paperItem = document.createElement("paper-item");
-			paperItem.innerHTML = mediaData.value[i].base;
-			document.getElementById("mediaList").appendChild(paperItem)
-			document.getElementById("mediaList").selected = null;
-		}
-	})
-});
-
-function syncArrays(oldVal, newVal) {
-	if (oldVal.length > newVal.length) {
-		let duplicateItems = oldVal.filter(obj => newVal.every(s => s.id !== obj.id));
-		for (let i = 0; i < duplicateItems.length; i++) {
-			tweetData.value.splice(tweetData.value.findIndex(obj => obj.id === duplicateItems[i].id), 1);
-		}
-	}
-	else if (oldVal.length < newVal.length) {
-		let missingItems = newVal.filter(obj => oldVal.every(s => s.id !== obj.id));
-		for (let i = 0; i < missingItems.length; i++) {
-			tweetData.value.push({ id: missingItems[i].id, game: missingItems[i].game, content: '', media: '' })
-		}
-	}
 }
 
-function startCountdown() {
-	clearInterval(buttonTimer);
-	const tweetButton = document.getElementById("tweetNow");
-	let time = parseFloat((nodecg.bundleConfig.tweetDelay / 1000))
-	tweetButton.innerHTML = "AutoTweet in " + time + "s";
-	tweetButton.removeAttribute('disabled')
-	document.getElementById("cancelTweet").removeAttribute('disabled')
-	buttonTimer = setInterval(function() {
-		time--
-		tweetButton.innerHTML = "AutoTweet in " + time + "s";
-		if (time <= 0) {
-			clearInterval(buttonTimer);
-			tweetButton.innerHTML = "Tweet Sent";
-			tweetButton.setAttribute('disabled', 'true');
-			document.getElementById("cancelTweet").setAttribute('disabled', 'true');
-			tweetNow();
-		}
-	}, 1000)
+function updateCountdown(newVal) {
+	let tweetButton = document.getElementById('sendTweet');
+	let cancelButton = document.getElementById('cancelTweet');
+	tweetButton.disabled = false;
+	cancelButton.disabled = false;
+	tweetButton.innerHTML = `Tweeting in ${newVal.countdown}s`;
 }
 
-function showButtons() {
-	document.getElementById("tweetNow").removeAttribute('disabled');
-	document.getElementById("tweetNow").innerHTML = 'Tweet';
+function updateSendTweet() {
+	if (countdownTimer.value.sendTweet)
+		countdownTimer.value.sendTweet = false;
+	countdownTimer.value.countdownActive = false;
+	countdownTimer.value.countdown = -1;
+	countdownTimer.value.sendTweet = true;
 }
 
-function tweetNow() {
-	clearInterval(buttonTimer)
-	document.getElementById("tweetNow").innerHTML = "Tweet";
-	document.getElementById("cancelTweet").setAttribute('disabled', 'true');
-	let selectedRunId = document.getElementById("runList").selectedItem.getAttribute('runId');
-	let currentTweetData = tweetData.value.find(obj => {
-		return obj.id === selectedRunId
-	})
-	if (currentTweetData !== undefined) {
-		sendTweet(currentTweetData);
-		document.getElementById("tweetNow").innerHTML = 'Tweet Sent'
-		document.getElementById("tweetNow").setAttribute('disabled', 'true');
-	}
+function sendTweet() {
+	let tweetButton = document.getElementById('sendTweet');
+	let cancelButton = document.getElementById('cancelTweet');
+	cancelButton.disabled = true;
+	tweetButton.disabled = true;
+	tweetButton.innerHTML = 'Tweet Sent';
 }
 
-function sendTweet(data) {
-	let mediaAsset = mediaData.value.find(obj => {
-		return obj.base === data.media;
-	})
-	if (mediaAsset !== undefined) {
-		nodecg.sendMessage('mediaUpload', "./" + mediaAsset.url, (error, media_id) => {
-			nodecg.sendMessage('statusesUpdate', {
-				status: data.content,
-				media_ids: media_id,
-			})
-		})
-	}
-	else {
-		nodecg.sendMessage('statusesUpdate', {
-			status: data.content,
-		})
-	}
-}
-
-function tweetTextarea() {
-	let media;
-	const tweetText = document.getElementById("composeTweet").value;
-	if (document.getElementById("composeTweet").value !== undefined) {
-		try { media = document.getElementById("mediaList").selectedItem.innerHTML } catch { media = undefined }
-		let currentTweetData = { content: tweetText, media: media };
-		sendTweet(currentTweetData);
-		document.getElementById("composeTweet").value = '';
-		document.getElementById("mediaList").selected = null;
-	}
-}
 function cancelTweet() {
-	clearInterval(buttonTimer);
-	document.getElementById("tweetNow").innerHTML = "Tweet";
-	document.getElementById("cancelTweet").setAttribute('disabled', 'true');
+	let tweetButton = document.getElementById('sendTweet');
+	let cancelButton = document.getElementById('cancelTweet');
+	cancelButton.disabled = true;
+	tweetButton.innerHTML = 'Tweet';
 }
 
-function changeSelectedTweet() {
-	clearInterval(buttonTimer);
-	document.getElementById("tweetNow").innerHTML = "Tweet";
-	document.getElementById("tweetNow").removeAttribute('disabled')
+function changeSelectedRun(id) {
+	selectedRunId.value = id;
 }
 
-function sendRunIndex() {
-	clearInterval(buttonTimer)
-	document.getElementById("tweetNow").innerHTML = "Tweet";
-	document.getElementById("cancelTweet").setAttribute('disabled', 'true');
-	nodecg.sendMessage('sendEditRunId', document.getElementById("runList").selectedItem.getAttribute('runId'));
+function updateDropdown(runId) {
+	document.getElementById('sendTweet').disabled = false;
+	document.getElementById('sendTweet').innerHTML = 'Tweet';
+	let dropdownContent = document.getElementById('runList').items;
+	for (let i = 0; i < dropdownContent.length; i++) {
+		if (dropdownContent[i].id === runId) {
+			document.getElementById('runList').selectIndex(i);
+			break;
+		}
+	}
+	updatePreview();
 }
 
-function clearMedia() {
-	document.getElementById("mediaList").selected = null;
+function updatePreview() {
+	document.getElementById('contentPreview').value = tweetData.value[selectedRunId.value].content;
+	document.getElementById('mediaPreview').value = tweetData.value[selectedRunId.value].media;
 }

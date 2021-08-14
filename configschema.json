@@ -2,7 +2,6 @@
     "$id": "http://example.com/example.json",
     "$schema": "http://json-schema.org/draft-07/schema",
     "default": {
-        "autoTweet": false,
         "tweetDelay": 30000,
         "apiKey": "",
         "apiSecret": "",
@@ -12,7 +11,6 @@
     "description": "The root schema comprises the entire JSON document.",
     "examples": [
         {
-            "autoTweet": false,
             "tweetDelay": 30000,
             "apiKey": "",
             "apiSecret": "",
@@ -21,7 +19,6 @@
         }
     ],
     "required": [
-        "autoTweet",
         "tweetDelay",
         "apiKey",
         "apiSecret",
@@ -31,16 +28,6 @@
     "title": "The root schema",
     "type": "object",
     "properties": {
-        "autoTweet": {
-            "$id": "#/properties/autoTweet",
-            "type": "boolean",
-            "title": "The autoTweet schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": false,
-            "examples": [
-                false
-            ]
-        },
         "tweetDelay": {
             "$id": "#/properties/tweetDelay",
             "type": "integer",
