@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<script defer src="/components/button/button.js"></script>
+	<script defer src="/components/button/icon-button.js"></script>
+	<script defer src="/components/input/input.js"></script>
+	<script defer src="/components/select/select.js"></script>
+	<script defer src="/components/textarea/textarea.js"></script>
+	</script>
+</head>
+
+<body>
+	<nodecg-input disabled label="Run" id="run"></nodecg-input>
+	<nodecg-textarea id="contentPreview" rows="6" label="Content"></nodecg-textarea>
+	<nodecg-select label="Media" id="media"></nodecg-select>
+	<div class="buttonDiv">
+		<nodecg-button id="cancel" onClick="nodecg.getDialog('editTweet').close()">Cancel</nodecg-button>
+		<nodecg-button id="saveTweet" onClick="saveTweet()">Save</nodecg-button>
+	</div>
+	<style>
+		nodecg-textarea {
+			margin: 15px 0;
+		}
+
+		.buttonDiv {
+			width: 100%;
+			justify-content: center;
+			display: flex;
+			gap: 15px;
+			margin: 15px 0;
+		}
+
+		.buttonDiv nodecg-button {
+			width: 100px;
+		}
+	</style>
+	<script>
+		let runId;
+		const runDataArray = nodecg.Replicant('runDataArray', 'nodecg-speedcontrol')
+		const tweetData = nodecg.Replicant('tweetData');
+		const mediaData = nodecg.Replicant('assets:media')
+		const selectedRunId = nodecg.Replicant('selectedRunId');
+
+		window.onload = () => {
+			NodeCG.waitForReplicants(runDataArray, tweetData, mediaData, selectedRunId).then(() => {
+				nodecg.listenFor('editTweet', (value) => updatePreview(selectedRunId.value))
+				mediaData.on('change', (newVal) => updateMediaDropdown(newVal))
+			});
+		}
+
+		function updateMediaDropdown(data) {
+			let select = document.querySelector('nodecg-select');
+			let options = '<option>None</option>';
+			for (const media of data) {
+				options += `<option>${media.base}</option>`
+			}
+			select.options = options;
+		}
+
+		function updatePreview(newVal) {
+			runId = newVal;
+			let runInfo = runDataArray.value.find(x => x.id === newVal);
+			let select = document.querySelector('nodecg-input').value = `${runInfo.game}, ${runInfo.category}`
+			let media = document.querySelector('nodecg-select').value = tweetData.value[newVal].media;
+			let content = document.querySelector('nodecg-textarea').value = tweetData.value[newVal].content;
+		}
+
+		function saveTweet() {
+			tweetData.value[runId].content = document.querySelector('nodecg-textarea').value;
+			tweetData.value[runId].media = (document.querySelector('nodecg-select').value === 'None') ? null : document.querySelector('nodecg-select').value;
+			nodecg.getDialog('editTweet').close();
+		}
+	</script>
+</body>
+
+</html>

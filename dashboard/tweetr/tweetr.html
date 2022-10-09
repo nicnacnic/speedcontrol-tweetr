@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <script defer src="/components/button/button.js"></script>
+    <script defer src="/components/button/icon-button.js"></script>
+    <script defer src="/components/input/input.js"></script>
+    <script defer src="/components/select/select.js"></script>
+    <script defer src="/components/textarea/textarea.js"></script>
+    </script>
+</head>
+
+<body>
+    <nodecg-select label="Run" onChange="selectedRunId.value = this.value"></nodecg-select>
+    <div class="buttonDiv">
+        <nodecg-button disabled id="sendTweet" onClick="nodecg.sendMessage('sendTweet')">Tweet</nodecg-button>
+        <nodecg-button disabled id="cancelTweet" onClick="cancelPress()">Edit
+        </nodecg-button>
+    </div>
+    <nodecg-textarea disabled id="contentPreview" rows="6" label="Tweet Preview"></nodecg-textarea>
+    <nodecg-input disabled label="Media" id="media"></nodecg-input>
+    <style>
+        nodecg-textarea {
+            margin-bottom: 20px;
+        }
+
+        .buttonDiv {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        #cancelTweet .cancel {
+            --nodecg-button-background-color: #990000;
+            --nodecg-button-hover-background-color: darkred;
+        }
+    </style>
+    <script>
+        const speedcontrolBundle = 'nodecg-speedcontrol';
+        const runDataArray = nodecg.Replicant('runDataArray', speedcontrolBundle);
+        const tweetData = nodecg.Replicant('tweetData');
+        const selectedRunId = nodecg.Replicant('selectedRunId');
+        const countdownTimer = nodecg.Replicant('countdownTimer');
+
+        window.onload = () => {
+            NodeCG.waitForReplicants(runDataArray, tweetData, selectedRunId, countdownTimer).then(() => {
+                runDataArray.on('change', (newVal) => populateDropdown(newVal));
+                selectedRunId.on('change', (newVal) => updatePreview(newVal));
+                tweetData.on('change', (newVal) => updatePreview(selectedRunId.value));
+
+                countdownTimer.on('change', (newVal) => {
+                    if (newVal.countdownActive && !newVal.sendTweet && !newVal.cancelTweet) updateCountdown(newVal);
+                    else if (!newVal.countdownActive && newVal.sendTweet) tweetSent();
+                    else if (!newVal.countdownActive && newVal.cancelTweet) cancelTweet();
+                })
+            })
+        };
+
+        function populateDropdown(data) {
+            let select = document.querySelector('nodecg-select');
+            let options = '';
+            for (const run of data) {
+                options += `<option value='${run.id}'>${run.game}, ${run.category}</option>`
+            }
+            select.options = options;
+        }
+
+        function updateCountdown(newVal) {
+            let tweetButton = document.getElementById('sendTweet');
+            let cancelButton = document.getElementById('cancelTweet');
+            tweetButton.disabled = true;
+            cancelButton.disabled = false;
+            tweetButton.value = `Tweeting in ${newVal.countdown}s`;
+            cancelButton.backgroundColor = '#990000';
+            cancelButton.backgroundColorHover = 'darkred'
+            cancelButton.value = 'Cancel'
+        }
+
+        function cancelPress() {
+            if (!countdownTimer.value.countdownActive) return openEditDialog();
+            nodecg.sendMessage('cancelTweet');
+        }
+
+        function cancelTweet() {
+            let tweetButton = document.getElementById('sendTweet');
+            let cancelButton = document.getElementById('cancelTweet');
+            tweetButton.disabled = false;
+            tweetButton.value = 'Tweet';
+            cancelButton.disabled = false;
+            cancelButton.backgroundColor = '#272727';
+            cancelButton.backgroundColorHover = '#383838';
+            cancelButton.value = 'Edit';
+        }
+
+        function tweetSent() {
+            let tweetButton = document.getElementById('sendTweet');
+            let cancelButton = document.getElementById('cancelTweet');
+            tweetButton.value = 'Tweet Sent'
+            tweetButton.disabled = true;
+            cancelButton.disabled = true;
+            cancelButton.backgroundColor = '#272727';
+            cancelButton.backgroundColorHover = '#383838';
+        }
+
+        function changeSelectedRun(id) {
+            selectedRunId.value = id;
+        }
+
+        function updatePreview(runId) {
+            let select = document.querySelector('nodecg-select').value = runId;
+            let media = document.querySelector('nodecg-input').value = tweetData.value[runId].media;
+            let content = document.querySelector('nodecg-textarea').value = tweetData.value[runId].content;
+            let sendTweet = document.querySelector('#sendTweet');
+            let cancelTweet = document.querySelector('#cancelTweet');
+            sendTweet.disabled = false;
+            sendTweet.value = 'Tweet'
+            cancelTweet.disabled = false;
+            cancelTweet.value = 'Edit';
+            cancelTweet.backgroundColor = '#272727';
+            cancelTweet.backgroundColorHover = '#383838';
+        }
+
+        function openEditDialog() {
+            nodecg.sendMessage('editTweet');
+            nodecg.getDialog('editTweet').open()
+        }
+    </script>
+</body>
+
+</html>

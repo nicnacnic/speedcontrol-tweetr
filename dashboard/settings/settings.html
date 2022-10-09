@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <script defer src="/components/button/button.js"></script>
+    <script defer src="/components/input/input.js"></script>
+    </script>
+</head>
+
+<body>
+    <nodecg-button id="autotweet" onClick="settings.value.autoTweet = !settings.value.autoTweet"></nodecg-button>
+    <nodecg-input type="number" id="countdown" label="Countdown Time" onChange="settings.value.countdown = this.value"></nodecg-input>
+    <nodecg-button id="inport" onClick="document.getElementById('inportInput').click()">Inport Tweets</nodecg-button>
+    <nodecg-button id="export" onClick="exportCSV();">Export Tweets</nodecg-button>
+    <input type="file" accept=".csv" id="inportInput" onChange="inportCSV(this)"></input>
+    <style>
+        nodecg-button {
+            margin-bottom: 15px;
+        }
+
+        nodecg-input {
+            margin-bottom: 15px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+    </style>
+    <script>
+        const settings = nodecg.Replicant('settings');
+
+        NodeCG.waitForReplicants(settings).then(() => {
+
+            settings.on('change', (newVal) => {
+                let autotweet = document.getElementById('autotweet');
+                switch (newVal.autoTweet) {
+                    case true: autotweet.buttonText = 'Disable Auto Tweet'; autotweet.backgroundColor = '#990000'; break;
+                    case false: autotweet.buttonText = 'Enable Auto Tweet'; autotweet.backgroundColor = '#272727'; break;
+                }
+                document.getElementById('countdown').value = newVal.countdown;
+            })
+        })
+
+        function inportCSV(input) {
+            let button = document.querySelector('#inport');
+            let file = input.files[0];
+            if (!file.name.includes('.csv'))
+                return;
+            button.disabled = true;
+            button.value = 'Uploading...'
+            setTimeout(() => {
+                const reader = new FileReader();
+                reader.readAsText(file);
+                reader.onload = () => {
+                    nodecg.sendMessage('inportCSV', reader.result)
+                    button.disabled = false;
+                    button.value = 'Inport Tweets'
+                };
+            }, 1000)
+        }
+
+        function exportCSV() {
+            let button = document.querySelector('#export');
+            button.disabled = true;
+            button.value = 'Generating CSV...'
+            nodecg.sendMessage('exportCSV').then(result => {
+                let element = document.createElement('a');
+                element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(result));
+                element.setAttribute('download', 'tweetr_data.csv');
+                element.style.display = 'none';
+                document.body.appendChild(element);
+                element.click();
+                document.body.removeChild(element);
+                button.value = 'Export Tweets'
+                button.disabled = false;
+            })
+        }
+    </script>
+</body>
+
+</html>
