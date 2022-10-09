@@ -8,7 +8,8 @@
   "license": "MIT",
   "nodecg": {
     "bundleDependencies": {
-      "nodecg-speedcontrol": "^2.4.0"
+      "nodecg-speedcontrol": "^2.4.0",
+      "nodecg-components": "^1.0.0"
     },
     "compatibleRange": "^1.8.1",
     "assetCategories": [
@@ -19,6 +20,8 @@
           "png",
           "jpg",
           "gif",
+          "jpeg",
+          "webp",
           "mp4"
         ]
       }
@@ -27,32 +30,29 @@
       {
         "name": "tweetr",
         "title": "Tweetr",
-        "file": "tweetr.html",
+        "file": "tweetr/tweetr.html",
         "width": 3
       },
       {
-        "name": "edit-tweet",
+        "name": "editTweet",
         "title": "",
         "width": 4,
-        "file": "edit-tweet.html",
+        "file": "editTweet/editTweet.html",
         "dialog": true
+      },
+      {
+        "name": "settings",
+        "title": "Tweetr Settings",
+        "workspace": "Settings",
+        "file": "settings/settings.html",
+        "width": 3
       }
     ]
   },
   "dependencies": {
-    "@polymer/paper-button": "^3.0.1",
-    "@polymer/paper-dropdown-menu": "^3.2.0",
-    "@polymer/paper-input": "^3.2.1",
-    "@polymer/paper-item": "^3.0.1",
-    "@polymer/paper-listbox": "^3.0.1",
-    "@polymer/paper-slider": "^3.0.1",
-    "@polymer/paper-styles": "^3.0.1",
-    "@polymer/polymer": "^3.4.1",
+    "form-data": "^4.0.0",
+    "node-fetch": "^2.6.6",
     "twitter-api-client": "^1.3.7",
-    "twitter-media": "^0.2.0"
-  },
-  "devDependencies": {
-    "@rollup/plugin-node-resolve": "^11.2.1",
-    "rollup": "^2.45.2"
+    "twitter-api-v2": "^1.12.7"
   }
 }
