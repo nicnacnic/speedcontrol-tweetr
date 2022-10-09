@@ -18,10 +18,12 @@ speedcontrol-tweetr is a bundle for NodeCG to allow users to schedule and post t
 - Post tweets directly from the dashboard, without having to login to the website!
 - Schedule tweets based on the active run, or create new tweets and send them instantly
 - Include embedded images and videos in your tweets
+- Inport/export your tweets for easy editing
 
 ## Requirements
 - [NodeCG](https://github.com/nodecg/nodecg)
 - [NodeCG Speedcontrol](https://github.com/speedcontrol/nodecg-speedcontrol)
+- [NodeCG Components](https://github.com/nicnacnic/nodecg-components)
 
 ## Installation
 To install, navigate to your root NodeCG directory and run the following command.
@@ -30,14 +32,14 @@ To install, navigate to your root NodeCG directory and run the following command
 
 After the installation completes, create a config file by running `nodecg defaultconfig speedcontrol-tweetr`.
 
-You will need to create a Twitter Developer account and get an API key/secret and an access token/secret to connect to Twitter.
+You will need to create a Twitter Developer account and get an API key/secret and an access token/secret to connect to Twitter. Make sure you get enhanced access with read **and** write privileges to avoid any errors!
 
 ## Usage
 Once the bundle is configured properly, usage is pretty simple. On first load, the bundle should automatically retrieve all runs and load them into the bundle. To edit tweets, simply select your game in the dropdown and press `Edit`. There is a 280 character limit. Make sure to save, then press anywhere outside of the dialog to exit.
 
 For media, upload images and videos through NodeCG's asset tab, located in the top-right. To select the media you want to use for your tweet, open the dropdown and select your file. Supported formats are png, jpg, gif and mp4. Images can not be larger than 5 MB, GIF's 15 MB, and videos 512 MB. Make sure your filename does **not** have spaces or invalid characters, and your media is within the size limit, or it will cause your NodeCG instance to crash.
 
-To enable Auto Tweet, set `autoTweet` to true in the config. `tweetDelay` specifies how long you have to cancel the tweet, 30 seconds is recommended. Once you switch runs, the button will show a countdown, you can either cancel the tweet (you can always tweet it later!), or wait for the countdown to finish, then the tweet will be sent.
+To enable Auto Tweet, press the button in the Settings tab of the NodeCG dashboard. Countdown time specifies how long you have to cancel the tweet, 60 seconds is recommended. Once you switch runs, the button will show a countdown, you can either cancel the tweet (you can always tweet it later!), or wait for the countdown to finish, then the tweet will be sent.
 
 The text box at the bottom is for when you want to quickly compose and post a tweet without attaching it to a run. The limits to character count and media size still apply here as well.
 
@@ -47,8 +49,16 @@ If you would like your social media team to use Tweetr, but don't want them to b
 
 **Security note:** Anyone who has access to Tweetr by default has access to your entire NodeCG instance, as NodeCG does not have user-level permissions and only supports a simple yes/no authentication state (if login security is enabled). Securing your NodeCG production instance is outside the scope of this bundle, please see the [official documentation on Security & Authentication](https://www.nodecg.dev/docs/security/).
 
-## Commission Work
-Commission work is available! If you don't have any coding experience, or simply don't have time to develop, I can help bring your project or event to life. More information can be found by visiting my website at [https://www.nicnacnic.com/commission-work](https://www.nicnacnic.com/commission-work) or contacting me through Discord.
+# Importing/Exporting Tweets
+To make life easier when you are trying to post many tweets at once, you can inport a .csv file with your tweet data. 
+
+1. Load all your runs into NodeCG.
+2. Export your tweets by pressing the **Export Tweets** button in the Settings tab in NodeCG.
+3. Load the .csv file into your favorite sheets software and edit away!
+
+When you're done, simply export your file as a .csv and inport it back into Tweetr with the **Inport Tweets** button. Make sure to not change any of the headers in the spreadsheet or it could cause errors!
+
+At the moment, medis is not automatically uploaded, so make sure to manually upload all your media through the dashbaord and select the appropiate file for each tweet.
 
 ## Other Bundles
 - [speedcontrol-layouts](https://github.com/nicnacnic/speedcontrol-layouts) A pack of simple yet easily customizable layouts, works very well with this bundle!
@@ -57,14 +67,14 @@ Commission work is available! If you don't have any coding experience, or simply
 ## Contributing
 There is a lot of inefficient code in this bundle. If you can optimize the code, or add new features, submit a pull request! Before you do, please make sure to **test your code**.
 
-Bugs or glitches should first be checked against the list of [known bugs](https://github.com/nicnacnic/obs-control/wiki), then by creating an issue in the [issue tracker](https://github.com/nicnacnic/obs-control/issues). Suggestions are always welcome!
+Bugs or glitches should first be checked against the list of [known bugs](https://github.com/nicnacnic/speedcontrol-tweetr/wiki), then by creating an issue in the [issue tracker](https://github.com/nicnacnic/speedcontrol-tweetr/issues). Suggestions are always welcome!
 
 If you're having issues or just want to chat, I can be reached on my [Discord](https://discord.gg/A34Qpfe) server.
 
 ## License
 MIT  License
 
-Copyright (c) 2021 nicnacnic
+Copyright (c) 2022 nicnacnic
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
